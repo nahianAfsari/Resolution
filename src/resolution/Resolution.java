@@ -14,6 +14,7 @@ import java.util.ArrayList;
  *
  * @author nahianafsari
  */
+
 public class Resolution {
 
 
@@ -39,9 +40,68 @@ public class Resolution {
             e.printStackTrace();
         }
 
+       
+        //System.out.println("testing clause: ");
+        //testingClause.print();
+        for(int i = 0; i < testingClause.clause.size();i++)
+        {
+           //negating the negated literal
+           if(testingClause.clause.get(i).charAt(0) == '~')
+           {
+               StringBuilder removedTildeLiteral = new StringBuilder(testingClause.clause.get(i));
+               removedTildeLiteral.deleteCharAt(0);
+               clauses.add(new Clause(removedTildeLiteral.toString()));
+               
+           }
+           //negating the regular literal
+           else
+           {
+               String addedTildeLiteral = "~" + testingClause.clause.get(i);
+               clauses.add(new Clause(addedTildeLiteral));
+           }
+           
+           
+        }
         printClauses(clauses);
-        System.out.println("testing clause: ");
-        testingClause.print();
+        
+        for(int j = 0; j < clauses.size(); j++)
+        {
+           
+            Scan scanner = new Scan(knowledgeBase, clauses.get(j));
+            
+            //first clean up the clause to make sure there are no redundant literals
+            Clause modifiedClause = scanner.checkForRedundantLiterals();
+            scanner.candidate = modifiedClause;
+            
+            //if removing redundant literals ends up being null then move on to the next clause
+            if(modifiedClause == null)
+            {
+                continue;
+            }
+            //then check for the following conditions :
+            
+            //returns true if there are redundant clauses
+            if(scanner.checkForRedundantClauses())
+            {
+                //if addition of this jth clauses leads to redundant clauses, don't add it to knowledgebase
+                //continue on to evaluating the next clause in the clauses list
+                
+                continue;
+            }
+            
+            //returns true if a literal and it's negation exists
+            if(scanner.literalAndItsNegation())
+            {
+              continue;
+            }
+            
+            knowledgeBase.add(modifiedClause);  
+            
+        }
+        
+        System.out.println("\nKnowledge Base clauses : ");
+        printClauses(knowledgeBase);
+        
 
     }
 
@@ -50,5 +110,8 @@ public class Resolution {
             clauses.get(i).print();
         }
     }
+  
+    
+    
 
 }
