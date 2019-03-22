@@ -9,15 +9,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class Clause {
 
     List<String> clause;
 
     public Clause(String input){
-        clause = new ArrayList<>();
-        String[] temp = input.split(" ");
-
-        clause = Arrays.asList(temp);
+        
+        if(input == null)
+        {
+            clause = null;
+        }
+        else
+        {
+            clause = new ArrayList<>();
+            String[] temp = input.split(" ");
+ 
+            clause = Arrays.asList(temp);
+            
+        }
+        
     }
 
     public void print(){
