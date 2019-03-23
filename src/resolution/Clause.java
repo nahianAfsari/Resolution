@@ -14,6 +14,7 @@ public class Clause {
 
     List<String> clause;
     String clauseString;
+    int clauseStringLength;
     int clauseNumber;
 
     public Clause(String input){
@@ -23,6 +24,7 @@ public class Clause {
         if(input == null)
         {
             clause = null;
+            clauseStringLength = 0;
         }
         else
         {
@@ -31,7 +33,34 @@ public class Clause {
  
             clause = Arrays.asList(temp);
             
+            clauseStringLength = clauseString.length();
+            
         }
+        
+        
+        
+    }
+    
+    public void setString()
+    {
+        clauseString = "";
+        for(int i = 0; i < clause.size(); i++)
+        {
+            if(i == clause.size() - 1)
+            {
+                clauseString += clause.get(i);
+            }
+            else
+            {
+                
+                clauseString += clause.get(i) + " ";
+            }
+            
+        }
+        
+        clauseStringLength = clauseString.length();
+
+        
         
     }
 
