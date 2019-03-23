@@ -17,12 +17,11 @@ public class GenerateClause {
     
      ArrayList<Clause> knowledgeBase;
      KnowledgeBase kb;
-     int startPosition;
+     int startPosition = 1;
      
-     GenerateClause(KnowledgeBase kb, int startPosition)
+     GenerateClause(KnowledgeBase kb)
      {
          this.kb = kb;
-         this.startPosition = startPosition;
          this.knowledgeBase = kb.clauses;
      }
      
@@ -59,7 +58,7 @@ public class GenerateClause {
                     scanner.candidate = modifiedClause;
 
                     //if removing redundant literals ends up being null then move on to the next clause
-                    if(modifiedClause == null)
+                    if(modifiedClause.clause.size() == 0)
                     {
                         continue;
                     }
@@ -83,7 +82,6 @@ public class GenerateClause {
                     kb.numOfClauses++;
                     modifiedClause.clauseNumber = kb.numOfClauses;
                     kb.clauses.add(modifiedClause);
-                  
                     modifiedClause.print();
                     System.out.print("{" + parent1 + ", " + parent2 + "}");
                     System.out.println();
@@ -128,6 +126,9 @@ public class GenerateClause {
         
         //look at comments from Scan.java inside literalAndItsNegation method for comments to understand
         //this section
+        
+        
+        
         for(int i = 0; i < parent1.clause.size(); i++)
         {
         
@@ -167,12 +168,21 @@ public class GenerateClause {
         //check the parent2literals against parent1negatedliterals
         GenClause genClause = new GenClause(null);
         genClause.clause = new ArrayList<>();
+        
+        //we cannot eliminate more than one literal at a time
+        int numOfLiteralsEliminated = 0;
+        
+        
         for(String key : parent1literals.keySet())
         {
             //if corresponding negated literal doesn't exist, add that to the generated clause
             if(!parent2negatedLiterals.containsKey(key))
             {
                 genClause.clause.add(parent1literals.get(key));
+            }
+            else
+            {
+                numOfLiteralsEliminated++;
             }
         }
         
@@ -183,6 +193,11 @@ public class GenerateClause {
             {
                 genClause.clause.add(parent1negatedLiterals.get(key));
             }
+            else
+            {
+                numOfLiteralsEliminated++;
+            }
+            
         }
         
         
@@ -192,6 +207,8 @@ public class GenerateClause {
             {
                 genClause.clause.add(parent2literals.get(key));
             }
+            
+            
         }
         
         for(String key : parent2negatedLiterals.keySet())
@@ -200,6 +217,8 @@ public class GenerateClause {
             {
                 genClause.clause.add(parent2negatedLiterals.get(key));
             }
+            
+            
         }
         
         //if the two clauses were completely different then the genClause.clause would have ALL the literals
@@ -212,7 +231,13 @@ public class GenerateClause {
             genClause.contradiction = false;
             return genClause;
         }
-        
+        if(numOfLiteralsEliminated > 1)
+        {
+            genClause.clause = null;
+            genClause.contradiction = false;
+            return genClause;
+            
+        }
         //add the parent clauses for the new general clause
          genClause.parentClauses.add(parent2.clauseNumber);
          genClause.parentClauses.add(parent1.clauseNumber);
@@ -220,7 +245,7 @@ public class GenerateClause {
         
         //if genClause is null that means all the literals were successfully removed due to a negated version
         //of that literal in the other clause
-        if(genClause.clause.size() == 0)
+        if(genClause.clause.size() == 0 && parent1.clause.size() == 1 && parent2.clause.size() == 1)
         {
           
             genClause.clause = null;

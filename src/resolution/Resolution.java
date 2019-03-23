@@ -82,12 +82,9 @@ public class Resolution {
         printInitialClauses(kb.clauses);
         
         
-        //figure out from which clause we start testing from which is the first clause of the testing clause
-        int startPosition = kb.numOfClauses - testingClause.clause.size();
         
         
-        
-        GenerateClause generateClause = new GenerateClause(kb, startPosition);
+        GenerateClause generateClause = new GenerateClause(kb);
         generateClause.generateNewClause();
         
         
