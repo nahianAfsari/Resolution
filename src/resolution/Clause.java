@@ -13,9 +13,13 @@ import java.util.List;
 public class Clause {
 
     List<String> clause;
+    String clauseString;
+    int clauseNumber;
 
     public Clause(String input){
         
+        
+        clauseString = input;
         if(input == null)
         {
             clause = null;
@@ -32,9 +36,10 @@ public class Clause {
     }
 
     public void print(){
+        System.out.print(clauseNumber + ". ");
         for(int i = 0; i < clause.size(); i++){
             System.out.print(clause.get(i)+ " ");
         }
-        System.out.println();
+        //System.out.println();
     }
 }
