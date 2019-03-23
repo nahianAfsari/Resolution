@@ -28,7 +28,7 @@ public class Resolution {
         ArrayList<Clause> knowledgeBase = new ArrayList<>();
         Clause testingClause = null;
         try {
-            BufferedReader in = new BufferedReader(new FileReader("demo.in"));
+            BufferedReader in = new BufferedReader(new FileReader("task6.in"));
 
             String input = in.readLine();
             int x = 0;
