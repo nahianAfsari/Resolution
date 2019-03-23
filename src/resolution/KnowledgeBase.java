@@ -6,6 +6,8 @@
 package resolution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -15,6 +17,7 @@ public class KnowledgeBase {
     
     public int numOfClauses;
     public ArrayList<Clause> clauses;
+    Map<String,String> sortedClauseString = new HashMap<String,String>();
     
     KnowledgeBase()
     {

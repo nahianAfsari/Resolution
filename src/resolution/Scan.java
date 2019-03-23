@@ -21,11 +21,13 @@ public class Scan {
     
     ArrayList<Clause> knowledgeBase;
     Clause candidate;
+    KnowledgeBase kb;
     
-    Scan(ArrayList<Clause> knowledgeBase, Clause candidate)
+    Scan(ArrayList<Clause> knowledgeBase, Clause candidate, KnowledgeBase kb)
     {
         this.knowledgeBase = knowledgeBase;
         this.candidate = candidate;
+        this.kb = kb;
     }
     
     public boolean literalAndItsNegation()
@@ -103,6 +105,8 @@ public class Scan {
             
         }
         
+        modifiedClause.setString();
+        
         
         return modifiedClause;
         
@@ -134,6 +138,13 @@ public class Scan {
             }
         }
         
+        /*if(kb.sortedClauseString.containsKey(candidate.clauseString))
+        {
+            System.out.println(kb.sortedClauseString.get(candidate.clauseString));
+            System.out.println(candidate.clauseString);
+            return true;
+        }
+        */
         return redundantClause;
         
     }
@@ -146,6 +157,10 @@ public class Scan {
         
         //Creating a hashmap to store all the individual literals of the candidate clause
         Map<String, String> hashmap = new HashMap<String, String>();
+        if(kb.clauseStringLength != candidate.clauseStringLength)
+        {
+            return false;
+        }
         for(int i = 0; i < candidate.clause.size(); i++)
         {
             //made key and value the same because idk what else to put for value

@@ -51,14 +51,14 @@ public class GenerateClause {
                  {
                     int parent1 = genClause.parentClauses.get(0);
                     int parent2 = genClause.parentClauses.get(1);
-                    Scan scanner = new Scan(knowledgeBase, genClause);
+                    Scan scanner = new Scan(knowledgeBase, genClause, kb);
             
                     //first clean up the clause to make sure there are no redundant literals
                     Clause modifiedClause = scanner.checkForRedundantLiterals();
                     scanner.candidate = modifiedClause;
 
                     //if removing redundant literals ends up being null then move on to the next clause
-                    if(modifiedClause.clause.size() == 0)
+                    if(modifiedClause.clause.isEmpty())
                     {
                         continue;
                     }
