@@ -17,11 +17,12 @@ public class GenerateClause {
     
      ArrayList<Clause> knowledgeBase;
      KnowledgeBase kb;
+     int startPosition;
      
-     GenerateClause(KnowledgeBase kb)
+     GenerateClause(KnowledgeBase kb, int startPosition)
      {
          this.kb = kb;
-         
+         this.startPosition = startPosition;
          this.knowledgeBase = kb.clauses;
      }
      
@@ -30,22 +31,27 @@ public class GenerateClause {
      {
          //returns true if there was constradiction
          boolean done = false;
-         int i = 1;
          
          //while i is not equal to kbSize means checking until all the clauses in the knowledge base have been checked
          //againts every other clause in the kb
          
          //if it is equal to the numOfClauses then : no more clauses in the kb to check against the rest of kb
-         while(i < kb.numOfClauses - 1)
+         while(startPosition < kb.numOfClauses)
          {
+             //System.out.println(startPosition);
              int kbSize = knowledgeBase.size();
-             for(int j = 0; j < i; j++)
+             
+             for(int j = 0; j < startPosition; j++)
              {
-                 GenClause genClause = newClause(knowledgeBase.get(j),knowledgeBase.get(i));
+                 //System.out.println(knowledgeBase.get(j).clause.get(0));
+                 //System.out.println(knowledgeBase.get(i).clause.get(0));
+                 GenClause genClause = newClause(knowledgeBase.get(j),knowledgeBase.get(startPosition));
                  
                  //if genClause is not null, there was a new clause that was generated
                  if(genClause.clause != null )
                  {
+                    int parent1 = genClause.parentClauses.get(0);
+                    int parent2 = genClause.parentClauses.get(1);
                     Scan scanner = new Scan(knowledgeBase, genClause);
             
                     //first clean up the clause to make sure there are no redundant literals
@@ -77,8 +83,10 @@ public class GenerateClause {
                     kb.numOfClauses++;
                     modifiedClause.clauseNumber = kb.numOfClauses;
                     kb.clauses.add(modifiedClause);
-                    System.out.println();
+                  
                     modifiedClause.print();
+                    System.out.print("{" + parent1 + ", " + parent2 + "}");
+                    System.out.println();
                  }
                  
                  //if genCase was null, it could mean two things -
@@ -86,16 +94,19 @@ public class GenerateClause {
                  //2. No new clause was generated
                  if(genClause.clause == null && genClause.contradiction == true)
                  {
-                     System.out.println("Constradiction "+ "{" + genClause.parentClauses.get(0) + ", "
-                             + genClause.parentClauses.get(0) + "}");
+                     
+                     int clauseNum = kb.numOfClauses + 1;
+                     System.out.println(clauseNum + ". Constradiction "+ "{" + genClause.parentClauses.get(0) + ", "
+                             + genClause.parentClauses.get(1) + "}");
                      System.out.println("Valid");
                      done = true;
+                     return done;
                      
                  }
                  
              }
              
-             i++;
+             startPosition++;
          }
          
          
@@ -125,7 +136,7 @@ public class GenerateClause {
                 StringBuilder removedTildeLiteral = new StringBuilder(parent1.clause.get(i));
                 removedTildeLiteral.deleteCharAt(0);
                 
-                parent1negatedLiterals.put(removedTildeLiteral.toString(), removedTildeLiteral.toString());
+                parent1negatedLiterals.put(removedTildeLiteral.toString(), parent1.clause.get(i));
             }
             else
             {
@@ -142,7 +153,7 @@ public class GenerateClause {
                 StringBuilder removedTildeLiteral = new StringBuilder(parent2.clause.get(i));
                 removedTildeLiteral.deleteCharAt(0);
 
-                parent2negatedLiterals.put(removedTildeLiteral.toString(), removedTildeLiteral.toString());
+                parent2negatedLiterals.put(removedTildeLiteral.toString(), parent2.clause.get(i));
             }
             else
             {
@@ -155,21 +166,39 @@ public class GenerateClause {
         //check the parent1literals against parent2negatedliterals 
         //check the parent2literals against parent1negatedliterals
         GenClause genClause = new GenClause(null);
-        
+        genClause.clause = new ArrayList<>();
         for(String key : parent1literals.keySet())
         {
             //if corresponding negated literal doesn't exist, add that to the generated clause
             if(!parent2negatedLiterals.containsKey(key))
             {
-                genClause.clause.add(key);
+                genClause.clause.add(parent1literals.get(key));
             }
         }
+        
+        for(String key : parent1negatedLiterals.keySet())
+        {
+            //if corresponding negated literal doesn't exist, add that to the generated clause
+            if(!parent2literals.containsKey(key))
+            {
+                genClause.clause.add(parent1negatedLiterals.get(key));
+            }
+        }
+        
         
         for(String key : parent2literals.keySet())
         {
             if(!parent1negatedLiterals.containsKey(key))
             {
-                genClause.clause.add(key);
+                genClause.clause.add(parent2literals.get(key));
+            }
+        }
+        
+        for(String key : parent2negatedLiterals.keySet())
+        {
+            if(!parent1literals.containsKey(key))
+            {
+                genClause.clause.add(parent2negatedLiterals.get(key));
             }
         }
         

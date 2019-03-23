@@ -44,7 +44,7 @@ public class Resolution {
             e.printStackTrace();
         }
 
-       
+        
         //System.out.println("testing clause: ");
         //testingClause.print();
         for(int i = 0; i < testingClause.clause.size();i++)
@@ -79,14 +79,15 @@ public class Resolution {
             
         }
         
-        
-        
-        System.out.println("\nKnowledge Base clauses : ");
         printInitialClauses(kb.clauses);
         
         
+        //figure out from which clause we start testing from which is the first clause of the testing clause
+        int startPosition = kb.numOfClauses - testingClause.clause.size();
         
-        GenerateClause generateClause = new GenerateClause(kb);
+        
+        
+        GenerateClause generateClause = new GenerateClause(kb, startPosition);
         generateClause.generateNewClause();
         
         
