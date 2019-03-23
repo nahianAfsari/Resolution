@@ -7,6 +7,7 @@ package resolution;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 
 
@@ -15,8 +16,11 @@ import java.util.ArrayList;
  * @author nahianafsari
  */
 
+
+
 public class Resolution {
 
+    
 
     public static void main(String[] args) throws IOException {
 
@@ -24,7 +28,7 @@ public class Resolution {
         ArrayList<Clause> knowledgeBase = new ArrayList<>();
         Clause testingClause = null;
         try {
-            BufferedReader in = new BufferedReader(new FileReader("demo.in"));
+            BufferedReader in = new BufferedReader(new FileReader("task6.in"));
 
             String input = in.readLine();
             int x = 0;
@@ -40,7 +44,7 @@ public class Resolution {
             e.printStackTrace();
         }
 
-       
+        
         //System.out.println("testing clause: ");
         //testingClause.print();
         for(int i = 0; i < testingClause.clause.size();i++)
@@ -62,52 +66,43 @@ public class Resolution {
            
            
         }
-        printClauses(clauses);
         
+        KnowledgeBase kb = new KnowledgeBase();
+  
         for(int j = 0; j < clauses.size(); j++)
         {
-           
-            Scan scanner = new Scan(knowledgeBase, clauses.get(j));
+            kb.numOfClauses++;
+            clauses.get(j).clauseNumber = kb.numOfClauses;
+            kb.clauses.add(clauses.get(j));
             
-            //first clean up the clause to make sure there are no redundant literals
-            Clause modifiedClause = scanner.checkForRedundantLiterals();
-            scanner.candidate = modifiedClause;
             
-            //if removing redundant literals ends up being null then move on to the next clause
-            if(modifiedClause == null)
-            {
-                continue;
-            }
-            //then check for the following conditions :
-            
-            //returns true if there are redundant clauses
-            if(scanner.checkForRedundantClauses())
-            {
-                //if addition of this jth clauses leads to redundant clauses, don't add it to knowledgebase
-                //continue on to evaluating the next clause in the clauses list
-                
-                continue;
-            }
-            
-            //returns true if a literal and it's negation exists
-            if(scanner.literalAndItsNegation())
-            {
-              continue;
-            }
-            
-            knowledgeBase.add(modifiedClause);  
             
         }
         
-        System.out.println("\nKnowledge Base clauses : ");
-        printClauses(knowledgeBase);
+        printInitialClauses(kb.clauses);
+        
+        
+        
+        
+        GenerateClause generateClause = new GenerateClause(kb);
+        generateClause.generateNewClause();
+        
+        
+        
+        
         
 
     }
+    
+    
 
-    public static void printClauses(ArrayList<Clause> clauses){
+    //initially in the knowledge base, we're not doing any resolution
+    // so the curly brackets are always empty
+    public static void printInitialClauses(ArrayList<Clause> clauses){
         for(int i = 0; i < clauses.size(); i++){
             clauses.get(i).print();
+            System.out.print("{}\n");
+            
         }
     }
   

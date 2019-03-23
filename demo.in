@@ -1,8 +1,6 @@
-p q p
 ~p q
 ~z y
-y ~z
-~z y
-z ~z
-p
-~z y
+~q p
+q ~p z
+q ~p ~z
+~z y ~p
