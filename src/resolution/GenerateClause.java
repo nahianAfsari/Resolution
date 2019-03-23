@@ -179,10 +179,19 @@ public class GenerateClause {
             if(!parent2negatedLiterals.containsKey(key))
             {
                 genClause.clause.add(parent1literals.get(key));
+                
             }
             else
             {
+                parent2negatedLiterals.remove(key);
                 numOfLiteralsEliminated++;
+                if(numOfLiteralsEliminated > 1)
+                {
+                    genClause.clause = null;
+                    genClause.contradiction = false;
+                    return genClause;
+                    
+                }
             }
         }
         
@@ -195,31 +204,37 @@ public class GenerateClause {
             }
             else
             {
+                parent2literals.remove(key);
                 numOfLiteralsEliminated++;
+                if(numOfLiteralsEliminated > 1)
+                {
+                    genClause.clause = null;
+                    genClause.contradiction = false;
+                    return genClause;
+                    
+                }
             }
             
         }
         
-        
-        for(String key : parent2literals.keySet())
+        if(!parent2literals.isEmpty())
         {
-            if(!parent1negatedLiterals.containsKey(key))
+            for(String key : parent2literals.keySet())
             {
                 genClause.clause.add(parent2literals.get(key));
             }
             
-            
         }
-        
-        for(String key : parent2negatedLiterals.keySet())
+        if(!parent2negatedLiterals.isEmpty())
         {
-            if(!parent1literals.containsKey(key))
+            for(String key : parent2negatedLiterals.keySet())
             {
                 genClause.clause.add(parent2negatedLiterals.get(key));
             }
             
-            
         }
+        
+        
         
         //if the two clauses were completely different then the genClause.clause would have ALL the literals
         //from both parent clauses. So the followings checks whether the size of clause is equal to the size
