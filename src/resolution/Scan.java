@@ -48,23 +48,25 @@ public class Scan {
                 
                 //made key and value the same because idk what else to put for value cuz I don't really need it
                 negatedLiterals.put(removedTildeLiteral.toString(), removedTildeLiteral.toString());
+                
+                //if a literal from literals hashmap is inside negatedLiterals hashmap then that means : 
+                //a literal and it's negation exists so we shouldn't add it to knowledge base
+                if(literals.containsKey(removedTildeLiteral.toString()))
+                {
+                    return true;
+                }
             }
             else
             {
                 literals.put(candidate.clause.get(i), candidate.clause.get(i));
+                if(negatedLiterals.containsKey(candidate.clause.get(i)))
+                {
+                    return true;
+                }
             }
             
         }
         
-        //if a literal from literals hashmap is inside negatedLiterals hashmap then that means : 
-        //a literal and it's negation exists so we shouldn't add it to knowledge base
-        for(String key : literals.keySet())
-        {
-            if(negatedLiterals.containsKey(key))
-            {
-                return true;
-            }
-        }
         
         //if there are no matching literals in either of the hashmaps then that means :
         //a literal and it's negation doesn't exist in the candidate clause so return false;
@@ -161,6 +163,12 @@ public class Scan {
                 hashmap.remove(kb.clause.get(i));
                 kbSize--;
             }
+            else
+            {
+                return false;
+            }
+            
+            
         }
         
         //checking whether they end up being size 0 which indicates every literal matched
