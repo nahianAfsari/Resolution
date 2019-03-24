@@ -69,6 +69,5 @@ public class Clause {
         for(int i = 0; i < clause.size(); i++){
             System.out.print(clause.get(i)+ " ");
         }
-        //System.out.println();
     }
 }
