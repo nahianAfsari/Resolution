@@ -35,7 +35,7 @@ public class Clause {
             String[] temp = input.split(" ");
  
             clause = Arrays.asList(temp);
-            sortedClause = clause;
+            sortedClause = new ArrayList<>(clause);
             Collections.sort(sortedClause);
             sortedClauseString = "";
             for(int i = 0; i < sortedClause.size(); i++)
@@ -58,7 +58,7 @@ public class Clause {
     }
     public void setSortedString()
     {
-          sortedClause = clause;
+          sortedClause = new ArrayList<>(clause);
             Collections.sort(sortedClause);
             sortedClauseString = "";
             for(int i = 0; i < sortedClause.size(); i++)
