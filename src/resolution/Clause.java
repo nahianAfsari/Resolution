@@ -7,15 +7,18 @@ package resolution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
 public class Clause {
 
     List<String> clause;
+    List<String> sortedClause;
     String clauseString;
     int clauseStringLength;
     int clauseNumber;
+    String sortedClauseString;
 
     public Clause(String input){
         
@@ -32,7 +35,20 @@ public class Clause {
             String[] temp = input.split(" ");
  
             clause = Arrays.asList(temp);
-            
+            sortedClause = clause;
+            Collections.sort(sortedClause);
+            sortedClauseString = "";
+            for(int i = 0; i < sortedClause.size(); i++)
+            {
+                if(i == sortedClause.size() - 1)
+                {
+                    sortedClauseString += sortedClause.get(i);
+                }
+                else
+                {
+                    sortedClauseString += sortedClause.get(i) + " ";
+                }
+            }
             clauseStringLength = clauseString.length();
             
         }
@@ -40,6 +56,26 @@ public class Clause {
         
         
     }
+    public void setSortedString()
+    {
+          sortedClause = clause;
+            Collections.sort(sortedClause);
+            sortedClauseString = "";
+            for(int i = 0; i < sortedClause.size(); i++)
+            {
+                if(i == sortedClause.size() - 1)
+                {
+                    sortedClauseString += sortedClause.get(i);
+                }
+                else
+                {
+                    sortedClauseString += sortedClause.get(i) + " ";
+                }
+            }
+    }
+    
+    
+    
     
     public void setString()
     {

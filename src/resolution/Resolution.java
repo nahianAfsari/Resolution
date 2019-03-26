@@ -74,6 +74,7 @@ public class Resolution {
             kb.numOfClauses++;
             clauses.get(j).clauseNumber = kb.numOfClauses;
             kb.clauses.add(clauses.get(j));
+            kb.kbMap.put(clauses.get(j).sortedClauseString, clauses.get(j).clauseString);
             
             
             

@@ -19,10 +19,12 @@ public class GenClause extends Clause {
     
     List<Integer> parentClauses;
     boolean contradiction = false;
+    String sortedClauseString;
     
     
     public GenClause(String input) {
         super(input);
+      //  System.out.println(sortedClause);
         parentClauses = new ArrayList<>();
     }
     

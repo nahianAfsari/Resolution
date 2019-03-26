@@ -121,79 +121,26 @@ public class Scan {
         {
             return true;
         }
-        else
+
+        if(kb.kbMap.containsKey(candidate.sortedClauseString))
         {
-            //check redundancy for every clause inside the knowledge base
-            for(int i = 0; i < knowledgeBase.size(); i++)
-            {
-                boolean redundancy = false;
-                redundancy = checkForRedundancyHelper(knowledgeBase.get(i));
-                //if there was redundancy, return true immediately
-                if(redundancy)
-                {
-                    return true;
-                }
-                //if no redundancy was found, move on to the next clause of the knowledge base to check against
-               
-            }
-        }
-        
-        /*if(kb.sortedClauseString.containsKey(candidate.clauseString))
-        {
-            System.out.println(kb.sortedClauseString.get(candidate.clauseString));
-            System.out.println(candidate.clauseString);
+
             return true;
         }
-        */
         return redundantClause;
         
     }
     
     //this is a helper function of checkForRedundancy, it takes in the candidate clause and takes in another
     //clause to be checked against
-    public boolean checkForRedundancyHelper(Clause kb)
+    public boolean checkForRedundancyHelper(Clause kb1)
     {
         boolean redundantClause  = false;
-        
-        //Creating a hashmap to store all the individual literals of the candidate clause
-        Map<String, String> hashmap = new HashMap<String, String>();
-        if(kb.clauseStringLength != candidate.clauseStringLength)
+        if(kb.kbMap.containsKey(kb1.sortedClause))
         {
-            return false;
-        }
-        for(int i = 0; i < candidate.clause.size(); i++)
-        {
-            //made key and value the same because idk what else to put for value
-            //I just need key to look up whether this literal exists or not in the knowledgeBase clause
-            hashmap.put(candidate.clause.get(i), candidate.clause.get(i));
-        }
-        
-        //if every literal in the knowledgeBase clause is also in the hashmap of literals from the candidate clause
-        //that means it is the same clause
-        int kbSize = kb.clause.size();
-        for(int i = 0; i < kb.clause.size(); i++)
-        {
-            if(hashmap.containsKey(kb.clause.get(i)))
-            {
-                hashmap.remove(kb.clause.get(i));
-                kbSize--;
-            }
-            else
-            {
-                return false;
-            }
-            
-            
-        }
-        
-        //checking whether they end up being size 0 which indicates every literal matched
-        if(hashmap.size() == 0 && kbSize == 0)
-        {
-            //candidate clause and knowledgeBase clause is the same
             return true;
         }
-        
-        //candidate clause and knowledgeBase clause is not the same
+ 
         return redundantClause;
     }
     

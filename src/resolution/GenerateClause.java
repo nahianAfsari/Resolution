@@ -58,6 +58,7 @@ public class GenerateClause {
             
                     //first clean up the clause to make sure there are no redundant literals
                     Clause modifiedClause = scanner.checkForRedundantLiterals();
+                    modifiedClause.setSortedString();
                     scanner.candidate = modifiedClause;
 
                     //if removing redundant literals ends up being null then move on to the next clause
@@ -85,6 +86,8 @@ public class GenerateClause {
                     kb.numOfClauses++;
                     modifiedClause.clauseNumber = kb.numOfClauses;
                     kb.clauses.add(modifiedClause);
+                    
+                    kb.kbMap.put(modifiedClause.sortedClauseString, modifiedClause.clauseString);
                     modifiedClause.print();
                     System.out.print("{" + parent1 + ", " + parent2 + "}");
                     System.out.println();
@@ -109,10 +112,7 @@ public class GenerateClause {
              
              startPosition++;
          }
-         
-         
-             
-         
+  
          return done;
          
      }
@@ -227,24 +227,6 @@ public class GenerateClause {
              
         }
         
-        
-        /*
-        if(!parent2Hashmap.isEmpty())
-        {
-            for(String key : parent2Hashmap.keySet())
-            {
-                
-                if(parent2Hashmap.get(key) == null)
-                {
-                    generated.clause.add(key);
-                }
-                else
-                {
-                     generated.clause.add(parent2Hashmap.get(key));
-                }
-            }
-            
-        }*/
         
         if(!parent1Clauses.isEmpty())
         {
