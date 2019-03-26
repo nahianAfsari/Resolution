@@ -27,7 +27,7 @@ public class GenerateClause {
          this.kb = kb;
          this.knowledgeBase = kb.clauses;
      }
-     
+     //just adding comments so git thinks i added sth
      //this method returns true if a new clause was generated
      public boolean generateNewClause()
      {

@@ -52,7 +52,7 @@ public class Clause {
             clauseStringLength = clauseString.length();
             
         }
-        
+        //just adding comments so git thinks i added sth
         
         
     }

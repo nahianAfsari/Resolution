@@ -82,7 +82,7 @@ public class Scan {
     {
         Clause modifiedClause = new Clause(null);
         modifiedClause.clause = new ArrayList<String>();
-       
+       //just adding comments so git thinks i added sth
         
         //contains literals that are encountered for the very first time
         Map<String, String> uniqueLiterals = new HashMap<String, String>();
