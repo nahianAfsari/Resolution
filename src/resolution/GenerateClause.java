@@ -7,6 +7,9 @@ package resolution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -117,159 +120,183 @@ public class GenerateClause {
      //generates new clause givent two parent clauses
      public GenClause newClause(Clause parent1, Clause parent2)
      {
-        //first separate the regular literals and negated literals for each parent
-        Map<String, String> parent1literals = new HashMap<String, String>();
-        Map<String, String> parent1negatedLiterals = new HashMap<String, String>();
-        
-        Map<String, String> parent2literals = new HashMap<String, String>();
-        Map<String, String> parent2negatedLiterals = new HashMap<String, String>();
-        
-        //look at comments from Scan.java inside literalAndItsNegation method for comments to understand
-        //this section
+       
+         
+        int eliminated = 0;
+        Map<String, String> parent1Clauses = new LinkedHashMap<String, String>();
+        Map<String, String> parent2Hashmap = new LinkedHashMap<String, String>();
+        GenClause generated = new GenClause(null);
+        generated.clause = new ArrayList<>();
         
         
-        
-        for(int i = 0; i < parent1.clause.size(); i++)
+        for(int k = 0; k < parent1.clause.size(); k++)
         {
-        
-            if(parent1.clause.get(i).charAt(0) == '~')
+            if(parent1.clause.get(k).charAt(0) == '~')
             {
-                StringBuilder removedTildeLiteral = new StringBuilder(parent1.clause.get(i));
+                StringBuilder removedTildeLiteral = new StringBuilder(parent1.clause.get(k));
                 removedTildeLiteral.deleteCharAt(0);
                 
-                parent1negatedLiterals.put(removedTildeLiteral.toString(), parent1.clause.get(i));
+               parent1Clauses.put(removedTildeLiteral.toString(), parent1.clause.get(k));
+                
             }
             else
             {
-                parent1literals.put(parent1.clause.get(i), parent1.clause.get(i));
+                parent1Clauses.put(parent1.clause.get(k), null);
             }
-            
         }
         
-        for(int i = 0; i < parent2.clause.size(); i++)
+        for(int m = 0; m < parent2.clause.size(); m++)
         {
-            if(parent2.clause.get(i).charAt(0) == '~')
+            if(parent2.clause.get(m).charAt(0) == '~')
             {
-               
-                StringBuilder removedTildeLiteral = new StringBuilder(parent2.clause.get(i));
+                StringBuilder removedTildeLiteral = new StringBuilder(parent2.clause.get(m));
                 removedTildeLiteral.deleteCharAt(0);
+                
+               parent2Hashmap.put(removedTildeLiteral.toString(),parent2.clause.get(m));
+                
+            }
+            else
+            {
+                parent2Hashmap.put(parent2.clause.get(m), null);
+            }
+        }
+        boolean neg = false;
+        List<String> parent2Clauses = parent2.clause;
+        Iterator<Map.Entry<String, String> > iterator =parent2Hashmap.entrySet().iterator();
+        while(iterator.hasNext())
+        {
+             Map.Entry<String, String> entry = iterator.next();
+             
+            if(parent1Clauses.containsKey(entry.getKey()))
+            {
+                 if(entry.getValue() != null && parent1Clauses.get(entry.getKey()) == null)
+                 {
+                    iterator.remove();
+                    parent1Clauses.remove(entry.getKey());
+                    eliminated++;
+                    if(eliminated > 1)
+                        {
+                            generated.clause = null;
+                            generated.contradiction = false;
+                            return generated;
 
-                parent2negatedLiterals.put(removedTildeLiteral.toString(), parent2.clause.get(i));
-            }
-            else
-            {
-                parent2literals.put(parent2.clause.get(i), parent2.clause.get(i));
-            }
-            
-        }
-        
-        //after adding literals and negated literals to the respective hashmaps for parent1 and parent2
-        //check the parent1literals against parent2negatedliterals 
-        //check the parent2literals against parent1negatedliterals
-        GenClause genClause = new GenClause(null);
-        genClause.clause = new ArrayList<>();
-        
-        //we cannot eliminate more than one literal at a time
-        int numOfLiteralsEliminated = 0;
-        
-        
-        for(String key : parent1literals.keySet())
-        {
-            //if corresponding negated literal doesn't exist, add that to the generated clause
-            if(!parent2negatedLiterals.containsKey(key))
-            {
-                genClause.clause.add(parent1literals.get(key));
+                        }
+                    
+                 }
+                 else if(entry.getValue() == null && parent1Clauses.get(entry.getKey()) != null)
+                 {
+                    iterator.remove();
+                    parent1Clauses.remove(entry.getKey());
+                    eliminated++;
+                    if(eliminated > 1)
+                        {
+                            generated.clause = null;
+                            generated.contradiction = false;
+                            return generated;
+
+                        }
+                     
+                 }
+                 else
+                 {
+                    if(entry.getValue() == null)
+                    {
+                        generated.clause.add(entry.getKey());
+                    }
+                    else
+                    {
+                        generated.clause.add(entry.getValue());
+                    }
+                    iterator.remove();
+                 }
                 
             }
+            
             else
             {
-                parent2negatedLiterals.remove(key);
-                numOfLiteralsEliminated++;
-                if(numOfLiteralsEliminated > 1)
+                    if(entry.getValue() == null)
+                    {
+                        generated.clause.add(entry.getKey());
+                    }
+                    else
+                    {
+                        generated.clause.add(entry.getValue());
+                    }
+                    iterator.remove();
+            }
+             
+        }
+        
+        
+        /*
+        if(!parent2Hashmap.isEmpty())
+        {
+            for(String key : parent2Hashmap.keySet())
+            {
+                
+                if(parent2Hashmap.get(key) == null)
                 {
-                    genClause.clause = null;
-                    genClause.contradiction = false;
-                    return genClause;
-                    
+                    generated.clause.add(key);
+                }
+                else
+                {
+                     generated.clause.add(parent2Hashmap.get(key));
                 }
             }
-        }
+            
+        }*/
         
-        for(String key : parent1negatedLiterals.keySet())
+        if(!parent1Clauses.isEmpty())
         {
-            //if corresponding negated literal doesn't exist, add that to the generated clause
-            if(!parent2literals.containsKey(key))
+            for(String key : parent1Clauses.keySet())
             {
-                genClause.clause.add(parent1negatedLiterals.get(key));
-            }
-            else
-            {
-                parent2literals.remove(key);
-                numOfLiteralsEliminated++;
-                if(numOfLiteralsEliminated > 1)
+                if(parent1Clauses.get(key) == null)
                 {
-                    genClause.clause = null;
-                    genClause.contradiction = false;
-                    return genClause;
-                    
+                    generated.clause.add(key);
                 }
+                else
+                {
+                     generated.clause.add(parent1Clauses.get(key));
+                }
+               
             }
             
         }
         
-        if(!parent2literals.isEmpty())
-        {
-            for(String key : parent2literals.keySet())
-            {
-                genClause.clause.add(parent2literals.get(key));
-            }
-            
-        }
-        if(!parent2negatedLiterals.isEmpty())
-        {
-            for(String key : parent2negatedLiterals.keySet())
-            {
-                genClause.clause.add(parent2negatedLiterals.get(key));
-            }
-            
-        }
-        
-        
-        
-        //if the two clauses were completely different then the genClause.clause would have ALL the literals
+
+         //if the two clauses were completely different then the genClause.clause would have ALL the literals
         //from both parent clauses. So the followings checks whether the size of clause is equal to the size
         //of parent1 and parent2's literals. If so, we do not add to knowledgebase
-        
-        if(genClause.clause.size() == (parent1.clause.size() + parent2.clause.size()))
+        if(generated.clause.size() == (parent1.clause.size() + parent2.clause.size()))
         {
-            genClause.clause = null;
-            genClause.contradiction = false;
-            return genClause;
+           generated.clause = null;
+            generated.contradiction = false;
+            return generated;
         }
-        if(numOfLiteralsEliminated > 1)
+        if(eliminated > 1)
         {
-            genClause.clause = null;
-            genClause.contradiction = false;
-            return genClause;
+            generated.clause = null;
+            generated.contradiction = false;
+            return generated;
             
         }
         //add the parent clauses for the new general clause
-         genClause.parentClauses.add(parent2.clauseNumber);
-         genClause.parentClauses.add(parent1.clauseNumber);
+         generated.parentClauses.add(parent2.clauseNumber);
+         generated.parentClauses.add(parent1.clauseNumber);
         
         
         //if genClause is null that means all the literals were successfully removed due to a negated version
         //of that literal in the other clause
-        if(genClause.clause.size() == 0 && parent1.clause.size() == 1 && parent2.clause.size() == 1)
+        if(generated.clause.size() == 0 && parent1.clause.size() == 1 && parent2.clause.size() == 1)
         {
           
-            genClause.clause = null;
-            genClause.contradiction = true;
-            return genClause;
+            generated.clause = null;
+            generated.contradiction = true;
+            return generated;
         }
         
        
-        return genClause;
+        return generated;
         
         
      }
