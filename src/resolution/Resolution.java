@@ -44,7 +44,7 @@ public class Resolution {
             e.printStackTrace();
         }
 
-        
+        //just adding comments so git thinks i added sth
         //System.out.println("testing clause: ");
         //testingClause.print();
         for(int i = 0; i < testingClause.clause.size();i++)
@@ -74,6 +74,7 @@ public class Resolution {
             kb.numOfClauses++;
             clauses.get(j).clauseNumber = kb.numOfClauses;
             kb.clauses.add(clauses.get(j));
+            kb.kbMap.put(clauses.get(j).sortedClauseString, clauses.get(j).clauseString);
             
             
             
